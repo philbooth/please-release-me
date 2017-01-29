@@ -114,6 +114,8 @@ in order:
 
 * `git push`
 
+* `npm publish`
+
 ## How do I install it?
 
 ```
