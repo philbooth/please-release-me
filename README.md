@@ -53,7 +53,7 @@ in order:
    the release is aborted.
 
 4. Generate a list of commits
-   since the last tag.
+   made since the last tag.
 
 5. Based on the commits from `4`,
    bump the version string like so:
