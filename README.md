@@ -26,8 +26,8 @@ it won't work for you.
 ## What does it do?
 
 Performs sanity checks,
-bumps the version number
-updates the change log,
+bumps the version number,
+updates the change log
 and creates a new git tag.
 
 Specifically,
