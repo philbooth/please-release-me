@@ -123,7 +123,7 @@ npm i -g please-release-me
 ## How do I use it?
 
 Just run the command `release`,
-with no arguments.
+with no arguments:
 
 ```
 release
