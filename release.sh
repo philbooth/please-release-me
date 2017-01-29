@@ -115,5 +115,5 @@ if [ "$LOG" != "" ]; then
 fi
 
 git commit -a -m "release: $NEW_TAG"
-git tag -a "$NEW_TAG" -m "$BUILD_TYPE release\n\n$SUMMARY"
+git tag -a "$NEW_TAG" -m "`echo -e \"$BUILD_TYPE release\n\n$SUMMARY\"`"
 
