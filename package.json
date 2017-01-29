@@ -1,0 +1,26 @@
+{
+  "name": "please-release-me",
+  "version": "0.0.0",
+  "description": "Let me go!",
+  "author": "Phil Booth <pmbooth@gmail.com> (https://philbooth.me/)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/philbooth/please-release-me.git"
+  },
+  "homepage": "https://github.com/philbooth/please-release-me#readme",
+  "bugs": {
+    "url": "https://github.com/philbooth/please-release-me/issues"
+  },
+  "bin": {
+    "release": "./release.sh"
+  },
+  "keywords": [
+    "release",
+    "version",
+    "bump",
+    "increment",
+    "build",
+    "number"
+  ]
+}
