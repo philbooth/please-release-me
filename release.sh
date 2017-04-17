@@ -67,9 +67,12 @@ PATCH=`echo "$LAST_TAG" | cut -d '.' -f 3`
 case $BUILD_TYPE in
   "Major")
     MAJOR=`expr $MAJOR + 1`
+    MINOR=0
+    PATCH=0
     ;;
   "Minor")
     MINOR=`expr $MINOR + 1`
+    PATCH=0
     ;;
   "Patch")
     PATCH=`expr $PATCH + 1`
