@@ -15,7 +15,7 @@
 ## What is it?
 
 An automated release script
-for npm,
+for npm and python,
 built to work with
 the conventions
 used by my packages.
@@ -70,44 +70,49 @@ in order:
    * Otherwise,
 	 increment the patch number.
 
-6. Write the freshly bumped version string
-   to `package.json`.
-
-7. If `bower.json` exists,
+6. If `bower.json` exists,
    write the freshly bumped version string
    to `bower.json`.
 
-8. If `component.json` exists,
+7. If `component.json` exists,
    write the freshly bumped version string
    to `component.json`.
 
-9. If a change log is detected,
-   write a summary of the changes
-   to the change log.
-   It will recognise any of the following file names:
+8. If `package.json` exists,
+   write the freshly bumped version string
+   to `package.json`.
 
-   * `CHANGELOG.md`
+9. If `setup.py` exists,
+   write the freshly bumped version string
+   to `setup.py`.
 
-   * `CHANGELOG.txt`
+10. If a change log is detected,
+    write a summary of the changes
+    to the change log.
+    It will recognise any of the following file names:
 
-   * `CHANGELOG`
+    * `CHANGELOG.md`
 
-   * `CHANGES.md`
+    * `CHANGELOG.txt`
 
-   * `CHANGES.txt`
+    * `CHANGELOG`
 
-   * `CHANGES`
+    * `CHANGES.md`
 
-   * `HISTORY.md`
+    * `CHANGES.txt`
 
-   * `HISTORY.txt`
+    * `CHANGES`
 
-   * `HISTORY`
+    * `HISTORY.md`
 
-10. Commit all changes
+    * `HISTORY.txt`
+
+    * `HISTORY`
+
+11. Commit all changes
     made by the preceding steps.
 
-11. Tag the release
+12. Tag the release
     with the freshly bumped version string.
 
 ## What doesn't it do?
@@ -115,6 +120,10 @@ in order:
 * `git push`
 
 * `npm publish`
+
+* `python setup.py sdist upload`
+
+* `twine upload`
 
 ## How do I install it?
 

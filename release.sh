@@ -8,7 +8,7 @@ if [ "$COMMITS" = "" ]; then
   exit 1
 fi
 
-grep '^\s*"lint":' package.json > /dev/null
+grep '^\s*"lint":' package.json > /dev/null 2>&1
 if [ $? -eq 0 ]; then
   npm run lint
   if [ $? -ne 0 ]; then
@@ -17,7 +17,7 @@ if [ $? -eq 0 ]; then
   fi
 fi
 
-grep '^\s*"test":' package.json > /dev/null
+grep '^\s*"test":' package.json > /dev/null 2>&1
 if [ $? -eq 0 ]; then
   npm t
   if [ $? -ne 0 ]; then
@@ -26,7 +26,7 @@ if [ $? -eq 0 ]; then
   fi
 fi
 
-grep '^\s*"minify":' package.json > /dev/null
+grep '^\s*"minify":' package.json > /dev/null 2>&1
 if [ $? -eq 0 ]; then
   npm run minify
   if [ $? -ne 0 ]; then
@@ -64,6 +64,8 @@ MAJOR=`echo "$LAST_TAG" | cut -d '.' -f 1`
 MINOR=`echo "$LAST_TAG" | cut -d '.' -f 2`
 PATCH=`echo "$LAST_TAG" | cut -d '.' -f 3`
 
+SED_FRIENDLY_LAST_TAG="$MAJOR\\.$MINOR\\.$PATCH"
+
 case $BUILD_TYPE in
   "Major")
     MAJOR=`expr $MAJOR + 1`
@@ -81,14 +83,20 @@ esac
 
 NEW_TAG="$MAJOR.$MINOR.$PATCH"
 
-sed -i '' "s/\"version\": \"$LAST_TAG\"/\"version\": \"$NEW_TAG\"/" package.json
-
 if [ -f bower.json ]; then
   sed -i '' "s/\"version\": \"$LAST_TAG\"/\"version\": \"$NEW_TAG\"/" bower.json
 fi
 
 if [ -f component.json ]; then
   sed -i '' "s/\"version\": \"$LAST_TAG\"/\"version\": \"$NEW_TAG\"/" component.json
+fi
+
+if [ -f package.json ]; then
+  sed -i '' "s/\"version\": \"$LAST_TAG\"/\"version\": \"$NEW_TAG\"/" package.json
+fi
+
+if [ -f setup.py ]; then
+  sed -i '' "s/$SED_FRIENDLY_LAST_TAG/$NEW_TAG/g" setup.py
 fi
 
 if [ -f CHANGELOG.md ]; then
