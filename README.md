@@ -1,6 +1,6 @@
 # Please release me, let me go,
 
-[*For I don't love you any more...*](https://youtu.be/6S9ecXWCBCc?t=11s)
+[*For I don't love you any more...*](https://youtu.be/Iew2KfocTcE?t=11s)
 
 [![Package status](https://img.shields.io/npm/v/please-release-me.svg?style=flat-square)](https://www.npmjs.com/package/please-release-me)
 [![License](https://img.shields.io/github/license/philbooth/please-release-me.svg?style=flat-square)](https://opensource.org/licenses/MIT)
