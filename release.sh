@@ -37,28 +37,91 @@ fi
 
 while read -r COMMIT; do
   HASH=`echo "$COMMIT" | cut -d ' ' -f 1`
-  MESSAGE=`echo "$COMMIT" | cut -d ':' -f 2-`
-  TYPE=`echo "$COMMIT" | cut -d ' ' -f 2 | cut -d ':' -f 1 | cut -d '(' -f 1`
+  MESSAGE=`echo "$COMMIT" | cut -d ':' -f 2- | awk '{$1=$1};1'`
+  TYPE=`echo "$COMMIT" | cut -d ' ' -f 2 | awk '{$1=$1};1' | cut -d ':' -f 1 | cut -d '(' -f 1 | awk '{$1=$1};1'`
+  AREA=`echo "$COMMIT" | cut -d '(' -f 2 | cut -d ')' -f 1 | awk '{$1=$1};1'`
+
+  if [ "$AREA" = "$COMMIT" ]; then
+    AREA=""
+  fi
+
+  if [ "$AREA" != "" ]; then
+    AREA="$AREA: "
+  fi
 
   case $TYPE in
     "break"|"breaking")
       BUILD_TYPE="Major"
-      TYPE="breaking change"
+      if [ "$BREAK_SUMMARY" = "" ]; then
+        BREAK_SUMMARY="### Breaking changes\n"
+      fi
+      BREAK_SUMMARY="$BREAK_SUMMARY\n* $AREA$MESSAGE ($HASH)"
       ;;
     "feat"|"feature")
       if [ "$BUILD_TYPE" != "Major" ]; then
         BUILD_TYPE="Minor"
       fi
-      TYPE="feature"
+      if [ "$FEAT_SUMMARY" = "" ]; then
+        FEAT_SUMMARY="### New features\n"
+      fi
+      FEAT_SUMMARY="$FEAT_SUMMARY\n* $AREA$MESSAGE ($HASH)"
+      ;;
+    "fix")
+      if [ "$FIX_SUMMARY" = "" ]; then
+        FIX_SUMMARY="### Bug fixes\n"
+      fi
+      FIX_SUMMARY="$FIX_SUMMARY\n* $AREA$MESSAGE ($HASH)"
+      ;;
+    "perf"|"performance")
+      if [ "$PERF_SUMMARY" = "" ]; then
+        PERF_SUMMARY="### Performance improvements\n"
+      fi
+      PERF_SUMMARY="$PERF_SUMMARY\n* $AREA$MESSAGE ($HASH)"
+      ;;
+    "refactor")
+      if [ "$REFACTOR_SUMMARY" = "" ]; then
+        REFACTOR_SUMMARY="### Refactorings\n"
+      fi
+      REFACTOR_SUMMARY="$REFACTOR_SUMMARY\n* $AREA$MESSAGE ($HASH)"
       ;;
     *)
-      if [ "$BUILD_TYPE" != "Major" -a "$BUILD_TYPE" != "Minor" ]; then
-        BUILD_TYPE="Patch"
+      if [ "$OTHER_SUMMARY" = "" ]; then
+        OTHER_SUMMARY="### Other changes\n"
       fi
+      OTHER_SUMMARY="$OTHER_SUMMARY\n* $AREA$MESSAGE ($HASH)"
+      ;;
   esac
-
-  SUMMARY="* $TYPE:$MESSAGE ($HASH)\n$SUMMARY"
 done <<< "$COMMITS"
+
+if [ "$BUILD_TYPE" != "Major" -a "$BUILD_TYPE" != "Minor" ]; then
+  BUILD_TYPE="Patch"
+fi
+
+if [ "$BREAK_SUMMARY" != "" ]; then
+  BREAK_SUMMARY="$BREAK_SUMMARY\n\n"
+fi
+
+if [ "$FEAT_SUMMARY" != "" ]; then
+  FEAT_SUMMARY="$FEAT_SUMMARY\n\n"
+fi
+
+if [ "$FIX_SUMMARY" != "" ]; then
+  FIX_SUMMARY="$FIX_SUMMARY\n\n"
+fi
+
+if [ "$PERF_SUMMARY" != "" ]; then
+  PERF_SUMMARY="$PERF_SUMMARY\n\n"
+fi
+
+if [ "$REFACTOR_SUMMARY" != "" ]; then
+  REFACTOR_SUMMARY="$REFACTOR_SUMMARY\n\n"
+fi
+
+if [ "$OTHER_SUMMARY" != "" ]; then
+  OTHER_SUMMARY="$OTHER_SUMMARY\n\n"
+fi
+
+SUMMARY="$BREAK_SUMMARY$FEAT_SUMMARY$FIX_SUMMARY$PERF_SUMMARY$REFACTOR_SUMMARY$OTHER_SUMMARY"
 
 MAJOR=`echo "$LAST_TAG" | cut -d '.' -f 1`
 MINOR=`echo "$LAST_TAG" | cut -d '.' -f 2`
@@ -121,10 +184,10 @@ fi
 
 if [ "$LOG" != "" ]; then
   TEMP="__please_release_me_$LOG.$NEW_TAG.tmp"
-  awk "{ gsub(/^## $LAST_TAG$/, \"## $NEW_TAG\n\n$SUMMARY\n## $LAST_TAG\") }; { print }" "$LOG" > "$TEMP"
+  awk "{ gsub(/^## $LAST_TAG$/, \"## $NEW_TAG\n\n$SUMMARY## $LAST_TAG\") }; { print }" "$LOG" > "$TEMP"
   mv "$TEMP" "$LOG"
 fi
 
 git commit -a -m "release: $NEW_TAG"
-git tag -a "$NEW_TAG" -m "`echo \"$BUILD_TYPE release\n\n$SUMMARY\"`"
+git tag -a "$NEW_TAG" -m "`echo \"$BUILD_TYPE release $NEW_TAG\n\n$SUMMARY\"`"
 
