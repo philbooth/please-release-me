@@ -188,6 +188,8 @@ if [ "$LOG" != "" ]; then
   mv "$TEMP" "$LOG"
 fi
 
+GIT_FRIENDLY_SUMMARY=`echo "$SUMMARY" | sed "s/#//g" | sed "s/^ //"`
+
 git commit -a -m "release: $NEW_TAG"
-git tag -a "$NEW_TAG" -m "`echo \"$BUILD_TYPE release $NEW_TAG\n\n$SUMMARY\"`"
+git tag -a "$NEW_TAG" -m "`echo \"$BUILD_TYPE release $NEW_TAG\\n\\n$GIT_FRIENDLY_SUMMARY\"`"
 
